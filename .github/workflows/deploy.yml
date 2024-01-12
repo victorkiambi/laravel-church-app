@@ -9,9 +9,9 @@ on:
       - closed
 
 jobs:
-  deploy:
+  if_merged:
     runs-on: ubuntu-latest
-
+    if: github.event.pull_request.merged == true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -37,5 +37,5 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh-keyscan -H 34.212.22.15 >> ~/.ssh/known_hosts
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@34.212.22.15 'cd /var/www/church/laravel-church-app && git pull && composer install --no-dev && php artisan config:cache && php artisan route:cache && php artisan view:cache'
+          ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.USERNAME }}@34.212.22.15 'cd /var/www/church/laravel-church-app && git pull && composer install --no-dev && php artisan config:cache && php artisan route:cache && php artisan view:cache'
