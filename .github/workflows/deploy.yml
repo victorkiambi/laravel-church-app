@@ -9,9 +9,9 @@ on:
       - closed
 
 jobs:
-  if_merged:
+  deploy:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
