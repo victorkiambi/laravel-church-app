@@ -3,21 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
     //Get all posts
-    public function index()
+    public function index(): JsonResponse
     {
-        return Post::with(['user:id,username', 'comments:id,post_id,comments'])
+        $posts = Post::with(['user:id,username', 'comments:id,post_id,comments'])
             ->paginate(5);
+        return response()->json($posts);
     }
 
     //Get a post by id
-    public function show($id)
+    public function show($id): JsonResponse
     {
-        return Post::with('comments.user')->findOrFail($id);
+        $post = Post::with('comments.user')->findOrFail($id);
+        return response()->json($post);
     }
 
     //Create a new post
