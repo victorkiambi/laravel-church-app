@@ -1,0 +1,42 @@
+name: Deploy Laravel to EC2
+
+on:
+  push:
+    branches:
+      - develop  # Update to your branch
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0' # Update PHP version as needed
+
+      - name: Install Dependencies
+        run: |
+          composer install --no-dev
+          npm install
+          npm run prod
+
+      - name: Set up SSH Key
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Deploy to EC2
+        run: |
+          ssh-keyscan -H 34.212.22.15 >> ~/.ssh/known_hosts
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@34.212.22.15 'cd /var/www/church/laravel-church-app && git pull && composer install --no-dev && php artisan config:cache && php artisan route:cache && php artisan view:cache'
