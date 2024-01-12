@@ -4,7 +4,7 @@ jobs:
     working_directory: ~/repo
     docker:
       # Specify the version you desire here
-      - image: dossierdata/php8.0-cimg
+      - image: php:latest
 
     steps:
       - checkout
