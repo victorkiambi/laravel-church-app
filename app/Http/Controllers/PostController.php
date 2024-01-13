@@ -13,7 +13,11 @@ class PostController extends Controller
     {
         $posts = Post::with(['user:id,username', 'comments:id,post_id,comments'])
             ->paginate(5);
-        return response()->json($posts);
+        $totalPages = $posts->lastPage();
+        return response()->json([
+            'content' => $posts,
+            'totalPages' => $totalPages
+        ]);
     }
 
     //Get a post by id
