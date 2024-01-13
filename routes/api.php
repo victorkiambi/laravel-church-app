@@ -18,15 +18,15 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
-Route::group(['prefix' => 'auth'], function () {
-    Route::post('login/app-user', 'App\Http\Controllers\AuthController@login');
+Route::group(['prefix' => 'v1'], function () {
+    Route::post('login', 'App\Http\Controllers\AuthController@login');
     Route::post('register', 'App\Http\Controllers\AuthController@register');
 });
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::get('logout', 'App\Http\Controllers\AuthController@logout');
-    Route::get('user', 'App\Http\Controllers\AuthController@user');
     Route::group( [ 'prefix' => 'v1' ], function () {
+        Route::get('logout', 'App\Http\Controllers\AuthController@logout');
+        Route::get('user', 'App\Http\Controllers\AuthController@user');
         Route::get( 'posts', 'App\Http\Controllers\PostController@index' );
         Route::get( 'posts/{id}', 'App\Http\Controllers\PostController@show' );
         Route::post( 'posts', 'App\Http\Controllers\PostController@store' );
