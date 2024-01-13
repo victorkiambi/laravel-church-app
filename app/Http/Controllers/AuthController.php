@@ -16,7 +16,7 @@ class AuthController extends Controller
     {
         //Validate the incoming request using the already included validator method
         $request->validate([
-            'username' => 'required|string|unique:users',
+            'username' => 'required|string|unique:app_users',
             'email' => 'required|email|unique:users',
             'password' => 'required|string',
             'first_name' => 'required|string',
