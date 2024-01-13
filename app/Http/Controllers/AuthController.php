@@ -17,13 +17,14 @@ class AuthController extends Controller
         //Validate the incoming request using the already included validator method
         $request->validate([
             'username' => 'required|string|unique:app_users',
-            'email' => 'required|email|unique:users',
+            'email' => 'required|email|unique:app_users',
             'password' => 'required|string',
             'first_name' => 'required|string',
             'last_name' => 'required|string'
         ]);
 
-        $registeredUser = AppUser::where('email', $request->email)->firstOrFail();
+
+        $registeredUser = AppUser::where('email', $request->email)->first();
         if ($registeredUser) {
             return response()->json([
                 'success' => false,
@@ -68,7 +69,7 @@ class AuthController extends Controller
             'password' => 'required|string'
         ]);
 
-        $appUser = AppUser::where('email', $request->email)->firstOrFail();
+        $appUser = AppUser::where('email', $request->email)->first();
         if(!$appUser || !Hash::check($request->password, $appUser->password)){
             return response()->json([
                 'message' => 'Invalid Credentials'
